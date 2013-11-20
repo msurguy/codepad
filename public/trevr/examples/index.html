@@ -1,0 +1,57 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="../sir-trevor-icons.css" type="text/css" media="screen" title="no title" charset="utf-8">
+  <link rel="stylesheet" href="../sir-trevor.css" type="text/css" media="screen" title="no title" charset="utf-8">
+</head>
+<body>
+  <form>
+    <div class="errors"></div>
+    <textarea class="sir-trevor" name="content">{"data":[{"type":"text","data":{"text":"Hello, I'm **Sir Trevor**.\nCreate some new blocks and see _what I can do_.\n"}},{"type":"video","data":{"source":"youtube","remote_id":"hcFLFpmc4Pg"}}]}</textarea>
+    <button type="submit">Send</button>
+  </form>
+
+  <script src="../components/jquery/jquery.js"></script>
+  <script src="../components/underscore/underscore.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../components/Eventable/eventable.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../sir-trevor.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../gist.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../ordered-list.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../markdown.js" type="text/javascript" charset="utf-8"></script>
+
+  <script type="text/javascript" charset="utf-8">
+    $(function(){
+      SirTrevor.DEBUG = true;
+
+      window.editor = new SirTrevor.Editor({
+        el: $('.sir-trevor'),
+        blockTypes: [
+          "Text",
+          "Heading",
+          "List",
+          "Quote",
+          "Image",
+          "Video",
+          "Gist",
+          "Markdown",
+          "OrderedList"
+        ]
+      });
+
+      $('form').bind('submit', function(){
+        $.post( "data", { data: window.editor.dataStore.toJSON} );
+        return false;
+      });
+
+    });
+  </script>
+</body>
+</html>
