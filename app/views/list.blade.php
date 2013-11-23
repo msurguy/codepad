@@ -9,14 +9,17 @@
     </div>
     
     @foreach($posts as $post)
-    <hr>
-    <div class="row">
-      <div class="col-md-12">
-      @foreach(json_decode($post->content)->data as $content)
-        {{ Post::presentContent($content) }}
-      @endforeach
+      @if($post->content && $post->content != 'null')
+      <hr>
+      <div class="row">
+        <div class="col-md-12">
+          <a href="{{ url('posts/'.$post->id.'/edit') }}">Edit</a>
+          @foreach(json_decode($post->content)->data as $content)
+            {{ Post::presentContent($content) }}
+          @endforeach
+        </div>
       </div>
-    </div>
+      @endif
     @endforeach
   </div>
 @stop

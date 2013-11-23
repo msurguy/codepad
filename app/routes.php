@@ -1,16 +1,5 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the Closure to execute when that URI is requested.
-|
-*/
-
 Route::get('/', function()
 {	
 	$posts = Post::orderBy('created_at','desc')->get();
@@ -35,6 +24,26 @@ Route::post('posts/new', function()
 		$post = Post::find($postID);
 	}
 	
+	$post->content = json_encode($content);
+	$post->save();
+
+	return Response::json(array('postID'=>$post->id));
+});
+
+
+Route::get('posts/{id}/edit', function($id)
+{
+	$post = Post::find($id);
+	$post->date = $post->date;
+	$decodedContent = json_decode($post->content)->data;
+
+	return View::make('editor',array('post'=>$post,'decodedContent'=>$decodedContent));
+});
+
+Route::post('posts/{id}/edit', function($id)
+{
+	$post = Post::find($id);
+	$content = Input::get('data');
 	$post->content = json_encode($content);
 	$post->save();
 

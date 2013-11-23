@@ -13,28 +13,26 @@ SirTrevor.Blocks.Code = SirTrevor.Block.extend({
   icon_name: 'text',
   className: "st-block st-icon--add st-code-block",
 
-  /*editorHTML: function() {
-    return '<div class="code-block" id="code-editor-content-' + this.blockID + '" style="position:absolute; top: 0; right: 0; bottom: 0;left: 0;"></div>';
-  },*/
-
   editorHTML: function() {
     return this.template(this);
   },
 
   loadData: function(data){
-    this.$('.code-block').html(SirTrevor.toHTML(data.text, this.type));
-    console.log('content loaded');
+    this.codeData = data.text;
+    //this.$('.code-block').html(data.text);
+    //console.log(this.$('.code-block').html());
   },
 
   onBlockRender: function() {
     this.codeEditor = ace.edit("code-editor-content-" + this.blockID);
     this.codeEditor.setTheme("ace/theme/github");
+    //console.log();
     this.codeEditor.getSession().setMode("ace/mode/php");
     this.codeEditor.setHighlightActiveLine(false);
+    this.codeEditor.getSession().setValue(this.codeData);
 
     this.$el.find('select').on('change', _.bind(function(ev){
       this.mode = $(ev.currentTarget).val();
-      console.log('mode switched to '+ this.mode);
       this.codeEditor.getSession().setMode("ace/mode/"+this.mode);
     }, this));
   },
@@ -44,7 +42,7 @@ SirTrevor.Blocks.Code = SirTrevor.Block.extend({
     var content =  this.codeEditor == undefined ? '' : this.codeEditor.getSession().getValue();
 
     if (content.length > 0) {
-      dataObj.text = content;
+      dataObj.text =  content;
       dataObj.mode = this.mode;
     }
 

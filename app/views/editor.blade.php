@@ -34,7 +34,7 @@
 			<div class="col-md-12">
 				<form id="form-content">
 				  <div class="errors"></div>
-				  <textarea class="sir-trevor" name="content"></textarea>
+				  <textarea class="sir-trevor" name="content">{{ isset($post) ? $post->content : ''}}</textarea>
 				</form>
 			</div>
 		</div>
@@ -63,10 +63,16 @@
   <script type="text/javascript" charset="utf-8">
     $(function(){
     	SirTrevor.DEBUG = true;
-    	
-      var postsRoot = "{{url('posts')}}",
-          newPostURL = "{{url('posts/new')}}",
-          postID = null,
+      var postsRoot = "{{url('posts')}}";
+      
+      @if(isset($post))
+        var newPostURL = "{{url('posts/'.$post->id.'/edit')}}";
+      @else
+        var newPostURL = "{{url('posts/new')}}";
+      @endif
+
+
+      var postID = null,
     	    form = $('#form-content'),
           saveContentBtn = $('#save-content'),
           viewPostBtn = $('#view-post');
