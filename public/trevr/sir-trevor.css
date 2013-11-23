@@ -1,8 +1,8 @@
-/*@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600);
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600);
 .st-outer {
   font-family: "Source Sans Pro", sans-serif;
   font-size: 16px; }
-*/
+
 /* Use the following CSS code if you want to use data attributes for inserting your icons */
 [data-icon]:before,
 [data-icon-after]:after {
@@ -63,13 +63,13 @@
   display: block;
   margin-bottom: 0.3em; }
 
-/*.st-text-block,
+.st-text-block,
 .st-block input[type="text"],
 .st-block textarea {
   font-family: "Source Sans Pro", sans-serif;
   font-size: inherit;
   margin: 0;
-  padding: 0.3em 0; }*/
+  padding: 0.3em 0; }
 
 .st-text-block,
 .st-text-block:active,
@@ -89,13 +89,13 @@
 .st-block input[type="text"],
 .st-block input[type="text"]:active,
 .st-block input[type="text"]:focus {
-  /*color: #42474b;*/
+  color: #42474b;
   border: 0.1em solid #d4d4d4;
-  /*padding: .6em;*/ }
+  padding: .6em; }
 
 .st-errors {
   background-color: #ffe1e4;
-  padding: 1em;
+  padding: 2em;
   color: #d70014; }
 
 .st-errors p,
@@ -126,14 +126,14 @@
   background: #f3f3f3; }
 
 .st-block-controls {
-  /*font-family: "Source Sans Pro", sans-serif;*/
+  font-family: "Source Sans Pro", sans-serif;
   background-color: #f3f3f3;
   display: none;
   border-radius: 0.2em;
   color: #42474b;
   width: 100%;
   text-align: center;
-  padding: 10px 0; }
+  padding: 1.2em 0; }
 
 .st-block-controls--active {
   display: block; }
@@ -157,7 +157,7 @@
   position: relative; }
 
 .st-block__inner {
-  padding: 1em 1em 1em;
+  padding: 1.875em 1.875em 2.8em;
   border: 2px solid #fff;
   position: relative; }
 
@@ -209,15 +209,14 @@
 
 .st-text-block {
   min-height: 3em;
-  /*font-size: 1.275em;
-  line-height: 1.45; */}
+  font-size: 1.275em;
+  line-height: 1.45; }
 
 .st-text-block--heading {
-  font-size: 30px;
-  font-weight: 500;
   line-height: 1.1;
+  font-size: 2.2em;
   min-height: auto;
-  }
+  font-weight: 700; }
 
 ul.st-text-block {
   margin-left: 1.875em; }
@@ -258,7 +257,7 @@ ul.st-text-block {
   background: #42474b;
   border-radius: 0.2em;
   padding: 0.35em 1em;
-  /*font-family: "Source Sans Pro", sans-serif;*/
+  font-family: "Source Sans Pro", sans-serif;
   font-size: 1.125em;
   cursor: pointer;
   color: #fff;

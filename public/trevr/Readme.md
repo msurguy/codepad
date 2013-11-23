@@ -4,7 +4,7 @@
 
 ![Sir Trevor in action](https://raw.github.com/madebymany/sir-trevor-js/master/examples/sir-trevor.gif)
 
-Conceived by [Andrew Sprinz](http://github.com/andrewsprinz‎). Maintained by [Chris Bell](http://github.com/cjbell88) & [Andrew Walker](http://github.com/ninjabiscuit).
+Conceived by [Andrew Sprinz](http://github.com/andrewsprinz). Maintained by [Chris Bell](http://github.com/cjbell88) & [Andrew Walker](http://github.com/ninjabiscuit).
 
 ## Quick start
 
@@ -20,6 +20,7 @@ Full documentation can be found [here](http://madebymany.github.io/sir-trevor-js
 
 1. [Sir Trevor Rails](http://github.com/madebymany/sir-trevor-rails)
 2. [Umbraco](http://our.umbraco.org/projects/backoffice-extensions/skybrud-sir-trevor-editor)
+3. [CakePHP](http://github.com/martinbean/cakephp-sir-trevor-plugin)
 
 ## Custom blocks
 

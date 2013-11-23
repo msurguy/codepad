@@ -7,6 +7,15 @@
   .st-block__inner label{
   	margin-bottom: 0;
   }
+  .st-code-block .st-block__inner{
+    height: 260px;
+    padding:10px;
+  }
+
+  .code-mode
+  {
+    margin-bottom:10px;
+  }
 
   a:hover {
   	text-decoration: none;
@@ -42,11 +51,14 @@
 @section('scripts')
   <script src="{{ url('trevr/components/jquery/jquery.js')}}"></script>
   <script src="{{ url('trevr/components/underscore/underscore.js')}}" type="text/javascript" charset="utf-8"></script>
+  <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js"></script>
+
   <script src="{{ url('trevr/components/Eventable/eventable.js')}}" type="text/javascript" charset="utf-8"></script>
   <script src="{{ url('trevr/sir-trevor.js')}}" type="text/javascript" charset="utf-8"></script>
   <script src="{{ url('trevr/gist.js')}}" type="text/javascript" charset="utf-8"></script>
   <script src="{{ url('trevr/ordered-list.js')}}" type="text/javascript" charset="utf-8"></script>
   <script src="{{ url('trevr/markdown.js')}}" type="text/javascript" charset="utf-8"></script>
+  <script src="{{ url('trevr/code.js')}}" type="text/javascript" charset="utf-8"></script>
 
   <script type="text/javascript" charset="utf-8">
     $(function(){
@@ -66,6 +78,7 @@
   				"Heading",
   				"List",
   				"Quote",
+          "Code",
   				//"Image",
   				"Video",
   				"Gist",

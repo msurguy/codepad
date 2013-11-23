@@ -7,7 +7,7 @@
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
 
-  SirTrevor.version = "0.3.0-rc.5";
+  SirTrevor.version = "0.3.0";
   SirTrevor.LANGUAGE = "en";
 
   function $element(el) {
@@ -55,7 +55,7 @@
     bound: [],
     _bindFunctions: function(){
       if (this.bound.length > 0) {
-        _.bindAll.apply(null, _.union(this, this.bound));
+        _.bindAll.apply(null, _.union([this], this.bound));
       }
     }
   };
@@ -71,6 +71,11 @@
 
     render: function() {
       return this;
+    },
+
+    destroy: function() {
+      if (!_.isUndefined(this.stopListening)) { this.stopListening(); }
+      this.$el.remove();
     },
 
     _ensureElement: function() {

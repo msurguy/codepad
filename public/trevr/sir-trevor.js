@@ -1,10 +1,10 @@
 /*!
- * Sir Trevor JS v0.3.0-rc.5
+ * Sir Trevor JS v0.3.0
  *
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-11-02
+ * 2013-11-20
  */
 
 (function ($, _){
@@ -16,7 +16,7 @@
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
 
-  SirTrevor.version = "0.3.0-rc.5";
+  SirTrevor.version = "0.3.0";
   SirTrevor.LANGUAGE = "en";
 
   function $element(el) {
@@ -64,7 +64,7 @@
     bound: [],
     _bindFunctions: function(){
       if (this.bound.length > 0) {
-        _.bindAll.apply(null, _.union(this, this.bound));
+        _.bindAll.apply(null, _.union([this], this.bound));
       }
     }
   };
@@ -80,6 +80,11 @@
 
     render: function() {
       return this;
+    },
+
+    destroy: function() {
+      if (!_.isUndefined(this.stopListening)) { this.stopListening(); }
+      this.$el.remove();
     },
 
     _ensureElement: function() {
@@ -244,7 +249,7 @@
         'close':            'close',
         'position':         'Position',
         'wait':             'Please wait...',
-        'link':             'Enter a link',
+        'link':             'Enter a link'
       },
       errors: {
         'title': "You have the following errors:",
@@ -280,55 +285,9 @@
           'title': "Embedly",
           'fetch_error': "There was a problem fetching your embed",
           'key_missing': "An Embedly API key must be present"
-        }
-      }
-    },
-  
-    de: {
-      general: {
-        'delete':           'Löschen?',
-        'drop':             '__block__ hier ablegen',
-        'paste':            'Oder Adresse hier einfügen',
-        'upload':           '...oder Datei auswählen',
-        'close':            'Schließen',
-        'position':         'Position',
-        'wait':             'Bitte warten...',
-        'link':             'Link eintragen'
-      },
-      errors: {
-        'title': "Die folgenden Fehler sind aufgetreten:",
-        'validation_fail': "Block __type__ ist ungültig",
-        'block_empty': "__name__ darf nicht leer sein",
-        'type_missing': "Blöcke mit Typ __type__ sind hier nicht zulässig",
-        'required_type_empty': "Angeforderter Block-Typ __type__ ist leer",
-        'load_fail': "Es wurde ein Problem beim Laden des Dokumentinhalts festgestellt"
-      },
-      blocks: {
-        text: {
-          'title': "Text"
         },
-        list: {
-          'title': "Liste (unsortiert)"
-        },
-        quote: {
-          'title': "Zitat",
-          'credit_field': "Quelle"
-        },
-        image: {
-          'title': "Bild",
-          'upload_error': "There was a problem with your upload"
-        },
-        video: {
-          'title': "Video"
-        },
-        tweet: {
-          'title': "Tweet",
-          'fetch_error': "Es wurde ein Problem beim Laden des Tweets festgestellt"
-        },
-        embedly: {
-          'title': "Embedly",
-          'fetch_error': "There was a problem fetching your embed",
-          'key_missing': "An Embedly API key must be present"
+        heading: {
+          'title': "Heading"
         }
       }
     }
@@ -683,7 +642,7 @@
   
     // Use custom formatters toHTML functions (if any exist)
     var formatName, format;
-    for(formatName in this.formatters) {
+    for(formatName in SirTrevor.Formatters) {
       if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
         format = SirTrevor.Formatters[formatName];
         // Do we have a toHTML function?
@@ -791,7 +750,7 @@
   
     // Use custom formatters toMarkdown functions (if any exist)
     var formatName, format;
-    for(formatName in this.formatters) {
+    for(formatName in SirTrevor.Formatters) {
       if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
         format = SirTrevor.Formatters[formatName];
         // Do we have a toMarkdown function?
@@ -1239,7 +1198,7 @@
   
     createStore: function(blockData) {
       this.blockStorage = {
-        type: this.type.toLowerCase(),
+        type: _.underscored(this.type),
         data: blockData || {}
       };
     },
@@ -1368,8 +1327,6 @@
         this._setBlockInner();
         this._blockPrepare();
   
-        this.onBlockRender();
-  
         return this;
       },
   
@@ -1380,6 +1337,7 @@
         this.checkAndLoadData();
   
         this.$el.addClass('st-item-ready');
+        this.on("onRender", this.onBlockRender);
         this.save();
       },
   
@@ -1435,7 +1393,7 @@
     var delete_template = [
       "<div class='st-block__ui-delete-controls'>",
         "<label class='st-block__delete-label'>",
-          i18n.t("general:delete"),
+        "<%= i18n.t('general:delete') %>",
         "</label>",
         "<a class='st-block-ui-btn st-block-ui-btn--confirm-delete st-icon' data-icon='tick'></a>",
         "<a class='st-block-ui-btn st-block-ui-btn--deny-delete st-icon' data-icon='close'></a>",
@@ -1445,22 +1403,21 @@
     var drop_options = {
       html: ['<div class="st-block__dropzone">',
              '<span class="st-icon"><%= _.result(block, "icon_name") %></span>',
-             '<p>',
-               i18n.t('general:drop', { block: '<span><%= block.title() %></span>' }),
+             '<p><%= i18n.t("general:drop", { block: "<span>" + block.title() + "</span>" }) %>',
              '</p></div>'].join('\n'),
       re_render_on_reorder: false
     };
   
     var paste_options = {
-      html: ['<input type="text" placeholder="', i18n.t('general:paste'),
-             '" class="st-block__paste-input st-paste-block">'].join('')
+      html: ['<input type="text" placeholder="<%= i18n.t("general:paste") %>"',
+             ' class="st-block__paste-input st-paste-block">'].join('')
     };
   
     var upload_options = {
       html: [
         '<div class="st-block__upload-container">',
         '<input type="file" type="st-file-upload">',
-        '<button class="st-upload-btn">', i18n.t('general:upload'), '</button>',
+        '<button class="st-upload-btn"><%= i18n.t("general:upload") %></button>',
         '</div>'
       ].join('\n')
     };
@@ -1474,7 +1431,7 @@
     _.extend(Block.prototype, SirTrevor.SimpleBlock.fn, SirTrevor.BlockValidations, {
   
       bound: ["_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick",
-              "clearInsertedStyles", "getSelectionForFormatter"],
+              "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender"],
   
       className: 'st-block st-icon--add',
   
@@ -1545,12 +1502,15 @@
         if (this.formattable) { this._initFormatting(); }
   
         this._blockPrepare();
-        this.onBlockRender();
   
         return this;
       },
   
       remove: function() {
+        if (this.ajaxable) {
+          this.resolveAllInQueue();
+        }
+  
         this.$el.remove();
       },
   
@@ -1590,9 +1550,11 @@
         }
   
         // Add any inputs to the data attr
-        if(this.$('input[type="text"]').not('.st-paste-block').length > 0) {
-          this.$('input[type="text"]').each(function(index,input){
-            dataObj[input.getAttribute('name')] = input.value;
+        if(this.$(':input').not('.st-paste-block').length > 0) {
+          this.$(':input').each(function(index,input){
+            if (input.getAttribute('name')) {
+              dataObj[input.getAttribute('name')] = input.value;
+            }
           });
         }
   
@@ -1650,7 +1612,7 @@
           return;
         }
   
-        this.$inner.append(delete_template);
+        this.$inner.append(_.template(delete_template));
         this.$el.addClass('st-block--delete-active');
   
         var $delete_el = this.$inner.find('.st-block__ui-delete-controls');
@@ -1854,10 +1816,9 @@
   
     var template = _.template([
       '<blockquote class="st-required st-text-block" contenteditable="true"></blockquote>',
-      '<label class="st-input-label">',
-      i18n.t('blocks:quote:credit_field'),
-      '</label>',
-      '<input maxlength="140" name="cite" placeholder="' + i18n.t('blocks:quote:credit_field') + '" class="st-input-string st-required js-cite-input" type="text" />'
+      '<label class="st-input-label"> <%= i18n.t("blocks:quote:credit_field") %></label>',
+      '<input maxlength="140" name="cite" placeholder="<%= i18n.t("blocks:quote:credit_field") %>"',
+      ' class="st-input-string st-required js-cite-input" type="text" />'
     ].join("\n"));
   
     return SirTrevor.Block.extend({
@@ -1884,80 +1845,14 @@
     });
   
   })();
-  SirTrevor.Blocks.Embedly = (function(){
-  
-    return SirTrevor.Block.extend({
-  
-      type: "embedly",
-  
-      key: '',
-  
-      droppable: true,
-      pastable: true,
-      fetchable: true,
-  
-      icon_name: "embed",
-  
-      loadData: function(data){
-        if (data.html) {
-         this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
-         this.$editor.html(data.html);
-        } else if (data.type == "photo") {
-         this.$editor.html("<img src=\""+data.url+"\" />");
-        }
-      },
-  
-      onContentPasted: function(event){
-        var input = $(event.target),
-            val = input.val();
-  
-        this.handleDropPaste(val);
-      },
-  
-      handleDropPaste: function(url){
-        if(!_.isURI(url)) {
-          SirTrevor.log("Must be a URL");
-          return;
-        }
-  
-        this.loading();
-  
-        var embedlyCallbackSuccess = function(data) {
-          this.setAndLoadData(data);
-          this.ready();
-        };
-  
-        var embedlyCallbackFail = function() {
-          this.ready();
-        };
-  
-        var ajaxOptions = {
-          url: this.buildAPIUrl(url),
-          dataType: "jsonp"
-        };
-  
-        this.fetch(ajaxOptions,
-                   _.bind(embedlyCallbackSuccess, this),
-                   _.bind(embedlyCallbackFail, this));
-      },
-  
-      buildAPIUrl: function(url) {
-        return "//api.embed.ly/1/oembed?key=" + this.key + "&url=" + escape(url);
-      },
-  
-      onDrop: function(transferData){
-        this.handleDropPaste(transferData.getData('text/plain'));
-      }
-  
-    });
-  
-  })();
   /*
     Text Block
   */
   SirTrevor.Blocks.Heading = SirTrevor.Block.extend({
   
     type: 'Heading',
+  
+    title: function(){ return i18n.t('blocks:heading:title'); },
   
     editorHTML: '<div class="st-required st-text-block st-text-block--heading" contenteditable="true"></div>',
   
@@ -2059,6 +1954,8 @@
       drop_options: {
         re_render_on_reorder: true
       },
+  
+      title: function(){ return i18n.t('blocks:tweet:title'); },
   
       fetchUrl: function(tweetID) {
         return "/tweets/?tweet_id=" + tweetID;
@@ -2636,30 +2533,7 @@
   SirTrevor.Editor = (function(){
   
     var SirTrevorEditor = function(options) {
-      SirTrevor.log("Init SirTrevor.Editor");
-  
-      this.blockTypes = {};
-      this.blockCounts = {}; // Cached block type counts
-      this.blocks = []; // Block references
-      this.errors = [];
-      this.options = _.extend({}, SirTrevor.DEFAULTS, options || {});
-      this.ID = _.uniqueId('st-editor-');
-  
-      if (!this._ensureAndSetElements()) { return false; }
-  
-      if(!_.isUndefined(this.options.onEditorRender) && _.isFunction(this.options.onEditorRender)) {
-        this.onEditorRender = this.options.onEditorRender;
-      }
-  
-      this._setRequired();
-      this._setBlocksTypes();
-      this._bindFunctions();
-  
-      this.store("create");
-      this.build();
-  
-      SirTrevor.instances.push(this);
-      SirTrevor.bindFormSubmit(this.$form);
+      this.initialize(options);
     };
   
     _.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
@@ -2677,7 +2551,33 @@
         'block:create:new':         'onNewBlockCreated'
       },
   
-      initialize: function() {},
+      initialize: function(options) {
+        SirTrevor.log("Init SirTrevor.Editor");
+  
+        this.blockTypes = {};
+        this.blockCounts = {}; // Cached block type counts
+        this.blocks = []; // Block references
+        this.errors = [];
+        this.options = _.extend({}, SirTrevor.DEFAULTS, options || {});
+        this.ID = _.uniqueId('st-editor-');
+  
+        if (!this._ensureAndSetElements()) { return false; }
+  
+        if(!_.isUndefined(this.options.onEditorRender) && _.isFunction(this.options.onEditorRender)) {
+          this.onEditorRender = this.options.onEditorRender;
+        }
+  
+        this._setRequired();
+        this._setBlocksTypes();
+        this._bindFunctions();
+  
+        this.store("create");
+        this.build();
+  
+        SirTrevor.instances.push(this);
+        SirTrevor.bindFormSubmit(this.$form);
+      },
+  
       /*
         Build the Editor instance.
         Check to see if we've been passed JSON already, and if not try and create a default block.
@@ -2721,6 +2621,39 @@
         if(!_.isUndefined(this.onEditorRender)) {
           this.onEditorRender();
         }
+      },
+  
+      destroy: function() {
+        // Destroy the rendered sub views
+        this.formatBar.destroy();
+        this.fl_block_controls.destroy();
+        this.block_controls.destroy();
+  
+        // Destroy all blocks
+        _.each(this.blocks, function(block) {
+          this.removeBlock(block.blockID);
+        }, this);
+  
+        // Stop listening to events
+        this.stopListening();
+  
+        // Cleanup element
+        var el = this.$el.detach();
+  
+        // Remove instance
+        SirTrevor.instances = _.reject(SirTrevor.instances, _.bind(function(instance) {
+          return instance.ID == this.ID;
+        }, this));
+  
+        // Clear the store
+        this.store("reset");
+  
+        this.$outer.replaceWith(el);
+      },
+  
+      reinitialize: function(options) {
+        this.destroy();
+        this.initialize(options || this.options);
       },
   
       _setEvents: function() {
@@ -2793,6 +2726,7 @@
   
         SirTrevor.EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
         SirTrevor.log("Block created of type " + type);
+        block.trigger("onRender");
   
         this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
         this.triggerBlockCountUpdate();
@@ -2902,10 +2836,6 @@
         this.blockCounts[type] = this.blockCounts[type] - 1;
         this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
         this.stopListening(block);
-  
-        if (block.ajaxable) {
-          block.resolveAllInQueue();
-        }
   
         block.remove();
   

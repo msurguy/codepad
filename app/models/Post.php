@@ -31,6 +31,9 @@ class Post extends Eloquent
 			case 'video':
 				return self::presentVideo($content);
 				break;
+			case 'code':
+				return self::presentCode($content);
+				break;
 			default:
 				return 'type';
 				break;
@@ -70,5 +73,10 @@ class Post extends Eloquent
 		if ($cite = $content->data->cite) 
 			$parsedContent = str_replace("</blockquote>", "<small>{$cite}</small></blockquote>",$parsedContent);
 		return $parsedContent;
+	}
+
+	public static function presentCode($content)
+	{
+		return '<pre class="pre-scrollable"><code>'.e($content->data->text).'</code></pre>';
 	}
 }
